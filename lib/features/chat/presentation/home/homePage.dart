@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 
 import 'listOf_person.dart';
 
-//const Color.fromARGB(255, 75, 71, 153)
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
