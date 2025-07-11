@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 
-import 'listOf_person.dart';
+import 'personList.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
