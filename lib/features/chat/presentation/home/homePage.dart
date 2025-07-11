@@ -19,7 +19,7 @@ class HomePage extends StatelessWidget {
           title: const Padding(
             padding: EdgeInsets.only(top: 8.0),
             child: Text(
-              "Hello,\nJohan",
+              "Chatting App",
               style: TextStyle(
                 color: Colors.black,
                 fontWeight: FontWeight.w600,
@@ -57,6 +57,8 @@ class HomePage extends StatelessWidget {
             ),
           ),
           actions: const [
+            Icon(Icons.camera_alt, color: Colors.black),
+            SizedBox(width: 10),
             Icon(Icons.search, color: Colors.black),
             SizedBox(width: 10),
             Icon(Icons.more_vert, color: Colors.black),
