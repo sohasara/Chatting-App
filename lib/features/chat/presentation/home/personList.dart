@@ -8,17 +8,11 @@ class ChatListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: CircleAvatar(
-        backgroundImage: NetworkImage(
-          '', // Replace with a valid image URL
-        ),
-      ),
+      leading: CircleAvatar(backgroundImage: AssetImage('assets/profle.jpeg')),
       title: Text('John Doe'),
       subtitle: Text('Hey, how are you?'),
       trailing: Text('10:30 AM'),
-      onTap: () {
-        // Navigate to chat details
-      },
+      onTap: () {},
     );
   }
 }
