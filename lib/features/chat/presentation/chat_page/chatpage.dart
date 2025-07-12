@@ -8,7 +8,14 @@ class Chatpage extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 209, 208, 231),
       appBar: AppBar(
-        title: Text("Chat Page"),
+        title: Text(
+          "Chat Page",
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w600,
+            fontSize: 24,
+          ),
+        ),
         backgroundColor: const Color.fromARGB(255, 107, 102, 241),
         actions: [
           IconButton(
