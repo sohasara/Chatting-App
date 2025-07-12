@@ -7,12 +7,19 @@ class ChatListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      leading: CircleAvatar(backgroundImage: AssetImage('assets/profle.jpeg')),
-      title: Text('John Doe'),
-      subtitle: Text('Hey, how are you?'),
-      trailing: Text('10:30 AM'),
-      onTap: () {},
+    return ListView.builder(
+      itemCount: 10, // Example item count
+      itemBuilder: (context, index) {
+        return ListTile(
+          leading: CircleAvatar(
+            backgroundImage: AssetImage('assets/profle.jpeg'),
+          ),
+          title: Text('John Doe'),
+          subtitle: Text('Hey, how are you?'),
+          trailing: Text('10:30 AM'),
+          onTap: () {},
+        );
+      },
     );
   }
 }
