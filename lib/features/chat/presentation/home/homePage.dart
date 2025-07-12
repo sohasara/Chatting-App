@@ -39,7 +39,8 @@ class HomePage extends StatelessWidget {
                 child: TabBar(
                   dividerColor: Colors.transparent,
                   indicator: BoxDecoration(
-                    color: const Color.fromARGB(255, 75, 71, 153),
+                    // color: const Color.fromARGB(255, 75, 71, 153),
+                    color: const Color.fromARGB(255, 141, 137, 248),
                     borderRadius: BorderRadius.circular(25),
                   ),
 
