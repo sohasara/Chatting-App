@@ -9,7 +9,7 @@ class Chatpage extends StatelessWidget {
       backgroundColor: const Color.fromARGB(255, 209, 208, 231),
       appBar: AppBar(
         title: Text("Chat Page"),
-        backgroundColor: const Color.fromARGB(255, 141, 137, 248),
+        backgroundColor: const Color.fromARGB(255, 107, 102, 241),
         actions: [
           IconButton(
             icon: Icon(Icons.videocam_rounded, color: Colors.white),

@@ -40,7 +40,7 @@ class HomePage extends StatelessWidget {
                   dividerColor: Colors.transparent,
                   indicator: BoxDecoration(
                     // color: const Color.fromARGB(255, 75, 71, 153),
-                    color: const Color.fromARGB(255, 141, 137, 248),
+                    color: const Color.fromARGB(255, 107, 102, 241),
                     borderRadius: BorderRadius.circular(25),
                   ),
 
