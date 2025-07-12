@@ -2,6 +2,8 @@
 
 import 'package:flutter/material.dart';
 
+import '../chat_page/chatpage.dart';
+
 class ChatListScreen extends StatelessWidget {
   const ChatListScreen({super.key});
 
@@ -17,7 +19,12 @@ class ChatListScreen extends StatelessWidget {
           title: Text('John Doe'),
           subtitle: Text('Hey, how are you?'),
           trailing: Text('10:30 AM'),
-          onTap: () {},
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const Chatpage()),
+            );
+          },
         );
       },
     );
