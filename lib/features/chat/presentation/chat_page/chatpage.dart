@@ -5,6 +5,7 @@ class Chatpage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    TextEditingController messageController = TextEditingController();
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 214, 212, 252),
       appBar: AppBar(
@@ -56,21 +57,30 @@ class Chatpage extends StatelessWidget {
                 // controller: _scrollController,
                 itemCount: 10,
                 itemBuilder: (context, index) {
-                  return Align(
-                    alignment: Alignment.centerRight,
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(
-                        vertical: 4,
-                        horizontal: 10,
-                      ),
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Text(
-                        "message[index]",
-                        style: const TextStyle(color: Colors.black),
+                  return Padding(
+                    padding: const EdgeInsets.all(6.0),
+                    child: Align(
+                      alignment: index % 2 == 0
+                          ? Alignment.centerRight
+                          : Alignment.centerLeft,
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(
+                          vertical: 5,
+                          horizontal: 10,
+                        ),
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: index % 2 == 0
+                              ? Colors.white
+                              : const Color.fromARGB(255, 160, 194, 253),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Text(
+                          messageController.text.isEmpty
+                              ? "Hello, this is a sample message."
+                              : messageController.text,
+                          style: const TextStyle(color: Colors.black),
+                        ),
                       ),
                     ),
                   );
@@ -87,7 +97,7 @@ class Chatpage extends StatelessWidget {
                     minLines: 1,
                     maxLines: 5,
                     onSubmitted: (_) {},
-                    //controller: messageController,
+                    controller: messageController,
                     decoration: InputDecoration(
                       contentPadding: const EdgeInsets.symmetric(
                         horizontal: 16,
