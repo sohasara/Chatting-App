@@ -6,7 +6,7 @@ class Chatpage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 209, 208, 231),
+      backgroundColor: const Color.fromARGB(255, 214, 212, 252),
       appBar: AppBar(
         title: Text(
           "Chat Page",
@@ -99,7 +99,10 @@ class Chatpage extends StatelessWidget {
                 CircleAvatar(
                   backgroundColor: Colors.white,
                   child: IconButton(
-                    icon: const Icon(Icons.send, color: Colors.blue),
+                    icon: const Icon(
+                      Icons.send,
+                      color: Color.fromARGB(255, 107, 102, 241),
+                    ),
                     onPressed: () {},
                   ),
                 ),
