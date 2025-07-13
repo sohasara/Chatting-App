@@ -8,6 +8,14 @@ class Chatpage extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 214, 212, 252),
       appBar: AppBar(
+        automaticallyImplyLeading: false, // Hides default back button
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+
         title: Text(
           "Chat Page",
           style: TextStyle(
