@@ -12,6 +12,14 @@ class HomePage extends StatelessWidget {
     return DefaultTabController(
       length: 3,
       child: Scaffold(
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {},
+          backgroundColor: const Color.fromARGB(255, 107, 102, 241),
+          child: const Icon(
+            Icons.chat_bubble_outline_rounded,
+            color: Colors.white,
+          ),
+        ),
         backgroundColor: const Color(0xFFF5F4FE),
         appBar: AppBar(
           backgroundColor: const Color(0xFFF5F4FE),
