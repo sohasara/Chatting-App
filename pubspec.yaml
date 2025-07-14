@@ -37,6 +37,7 @@ dependencies:
   flutter_riverpod: ^2.6.1
   hive_flutter: ^1.1.0
   contacts_service: ^0.6.3
+  go_router: ^16.0.0
 
 dev_dependencies:
   flutter_test:
