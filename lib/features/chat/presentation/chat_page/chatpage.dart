@@ -72,7 +72,7 @@ class Chatpage extends StatelessWidget {
                         decoration: BoxDecoration(
                           color: index % 2 == 0
                               ? Colors.white
-                              : const Color.fromARGB(255, 160, 194, 253),
+                              : const Color.fromARGB(255, 187, 212, 255),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Text(
