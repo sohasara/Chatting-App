@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import 'chat_provider.dart';
 
@@ -28,11 +29,11 @@ class _ChatpageState extends ConsumerState<Chatpage> {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 227, 226, 248),
       appBar: AppBar(
-        automaticallyImplyLeading: false,
+        //automaticallyImplyLeading: false,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
           onPressed: () {
-            Navigator.pop(context);
+            context.pop();
           },
         ),
         title: const Text(

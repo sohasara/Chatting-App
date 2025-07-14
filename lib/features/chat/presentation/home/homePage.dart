@@ -1,8 +1,8 @@
 // ignore_for_file: file_names
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
-import '../../../contract/presentation/contact_page.dart';
 import 'personList.dart';
 
 class HomePage extends StatelessWidget {
@@ -15,10 +15,7 @@ class HomePage extends StatelessWidget {
       child: Scaffold(
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const ContactPage()),
-            );
+            context.pushNamed('contactpage');
           },
           backgroundColor: const Color.fromARGB(255, 107, 102, 241),
           child: const Icon(

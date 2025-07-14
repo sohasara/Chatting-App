@@ -2,8 +2,7 @@
 
 import 'package:chatting_application/features/chat/data/person_data.dart';
 import 'package:flutter/material.dart';
-
-import '../chat_page/chatpage.dart';
+import 'package:go_router/go_router.dart';
 
 class ChatListScreen extends StatelessWidget {
   const ChatListScreen({super.key});
@@ -21,10 +20,7 @@ class ChatListScreen extends StatelessWidget {
           subtitle: Text('Hey, how are you?'),
           trailing: Text('10:30 AM'),
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const Chatpage()),
-            );
+            context.pushNamed('chatpage');
           },
         );
       },
