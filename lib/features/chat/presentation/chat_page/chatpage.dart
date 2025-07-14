@@ -7,7 +7,7 @@ class Chatpage extends StatelessWidget {
   Widget build(BuildContext context) {
     TextEditingController messageController = TextEditingController();
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 214, 212, 252),
+      backgroundColor: const Color.fromARGB(255, 227, 226, 248),
       appBar: AppBar(
         automaticallyImplyLeading: false, // Hides default back button
         leading: IconButton(
