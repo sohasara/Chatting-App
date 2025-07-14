@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 
+import '../../../contract/contact_page.dart';
 import 'personList.dart';
 
 class HomePage extends StatelessWidget {
@@ -13,7 +14,12 @@ class HomePage extends StatelessWidget {
       length: 3,
       child: Scaffold(
         floatingActionButton: FloatingActionButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const ContactPage()),
+            );
+          },
           backgroundColor: const Color.fromARGB(255, 107, 102, 241),
           child: const Icon(
             Icons.chat_bubble_outline_rounded,
