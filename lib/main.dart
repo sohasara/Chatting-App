@@ -1,4 +1,4 @@
-import 'package:chatting_application/features/chat/presentation/home/homePage.dart';
+import 'package:chatting_application/routes/app_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -11,11 +11,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       theme: ThemeData.light(),
       debugShowCheckedModeBanner: false,
-
-      home: const HomePage(),
+      routerConfig: appRouter,
+      title: 'Chatting Application',
     );
   }
 }
