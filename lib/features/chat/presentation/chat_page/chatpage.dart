@@ -1,23 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'chat_provider.dart';
 
-class Chatpage extends StatelessWidget {
+class Chatpage extends ConsumerStatefulWidget {
   const Chatpage({super.key});
 
   @override
+  ConsumerState<Chatpage> createState() => _ChatpageState();
+}
+
+class _ChatpageState extends ConsumerState<Chatpage> {
+  final TextEditingController messageController = TextEditingController();
+
+  void send() {
+    final text = messageController.text.trim();
+    if (text.isNotEmpty) {
+      ref.read(chatProvider.notifier).sendMessage(text);
+      messageController.clear();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    TextEditingController messageController = TextEditingController();
+    final messageState = ref.watch(chatProvider);
+
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 227, 226, 248),
       appBar: AppBar(
-        automaticallyImplyLeading: false, // Hides default back button
+        automaticallyImplyLeading: false,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
-
-        title: Text(
+        title: const Text(
           "Chat Page",
           style: TextStyle(
             color: Colors.white,
@@ -26,68 +43,51 @@ class Chatpage extends StatelessWidget {
           ),
         ),
         backgroundColor: const Color.fromARGB(255, 107, 102, 241),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.videocam_rounded, color: Colors.white),
-            onPressed: () {
-              // Implement more options functionality
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.phone, color: Colors.white),
-            onPressed: () {
-              // Implement search functionality
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.more_vert, color: Colors.white),
-            onPressed: () {
-              // Implement more options functionality
-            },
-          ),
+        actions: const [
+          Icon(Icons.videocam_rounded, color: Colors.white),
+          Icon(Icons.phone, color: Colors.white),
+          Icon(Icons.more_vert, color: Colors.white),
         ],
       ),
       body: Column(
         children: [
+          // CHAT MESSAGES LIST
           Expanded(
-            child: SizedBox(
-              width: MediaQuery.of(context).size.width,
-
-              child: ListView.builder(
-                // controller: _scrollController,
-                itemCount: 10,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.all(6.0),
-                    child: Align(
-                      alignment: index % 2 == 0
-                          ? Alignment.centerRight
-                          : Alignment.centerLeft,
-                      child: Container(
-                        margin: const EdgeInsets.symmetric(
-                          vertical: 5,
-                          horizontal: 10,
-                        ),
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: index % 2 == 0
-                              ? Colors.white
-                              : const Color.fromARGB(255, 187, 212, 255),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Text(
-                          messageController.text.isEmpty
-                              ? "Hello, this is a sample message."
-                              : messageController.text,
-                          style: const TextStyle(color: Colors.black),
-                        ),
+            child: ListView.builder(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              itemCount: messageState.length,
+              itemBuilder: (context, index) {
+                final isMyMessage = index % 2 == 0; // simulate sender
+                return Padding(
+                  padding: const EdgeInsets.all(6.0),
+                  child: Align(
+                    alignment: isMyMessage
+                        ? Alignment.centerRight
+                        : Alignment.centerLeft,
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(
+                        vertical: 5,
+                        horizontal: 10,
+                      ),
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: isMyMessage
+                            ? Colors.white
+                            : const Color.fromARGB(255, 187, 212, 255),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Text(
+                        messageState[index],
+                        style: const TextStyle(color: Colors.black),
                       ),
                     ),
-                  );
-                },
-              ),
+                  ),
+                );
+              },
             ),
           ),
+
+          // TEXT INPUT
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(
@@ -96,7 +96,6 @@ class Chatpage extends StatelessWidget {
                   child: TextField(
                     minLines: 1,
                     maxLines: 5,
-                    onSubmitted: (_) {},
                     controller: messageController,
                     decoration: InputDecoration(
                       contentPadding: const EdgeInsets.symmetric(
@@ -121,7 +120,7 @@ class Chatpage extends StatelessWidget {
                       Icons.send,
                       color: Color.fromARGB(255, 107, 102, 241),
                     ),
-                    onPressed: () {},
+                    onPressed: send,
                   ),
                 ),
               ],
