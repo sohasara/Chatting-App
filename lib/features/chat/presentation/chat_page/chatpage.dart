@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'chat_provider.dart';
 
 class Chatpage extends ConsumerStatefulWidget {
@@ -15,14 +16,14 @@ class _ChatpageState extends ConsumerState<Chatpage> {
   void send() {
     final text = messageController.text.trim();
     if (text.isNotEmpty) {
-      ref.read(chatProvider.notifier).sendMessage(text);
+      ref.read(chatProvider.notifier).sendMessage(text, isMe: true);
       messageController.clear();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final messageState = ref.watch(chatProvider);
+    final messages = ref.watch(chatProvider);
 
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 227, 226, 248),
@@ -51,17 +52,17 @@ class _ChatpageState extends ConsumerState<Chatpage> {
       ),
       body: Column(
         children: [
-          // CHAT MESSAGES LIST
+          // Message list
           Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.symmetric(vertical: 8),
-              itemCount: messageState.length,
+              itemCount: messages.length,
               itemBuilder: (context, index) {
-                final isMyMessage = index % 2 == 0; // simulate sender
+                final message = messages[index];
                 return Padding(
                   padding: const EdgeInsets.all(6.0),
                   child: Align(
-                    alignment: isMyMessage
+                    alignment: message.isMe
                         ? Alignment.centerRight
                         : Alignment.centerLeft,
                     child: Container(
@@ -71,13 +72,13 @@ class _ChatpageState extends ConsumerState<Chatpage> {
                       ),
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: isMyMessage
+                        color: message.isMe
                             ? Colors.white
                             : const Color.fromARGB(255, 187, 212, 255),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
-                        messageState[index],
+                        message.text,
                         style: const TextStyle(color: Colors.black),
                       ),
                     ),
@@ -86,8 +87,7 @@ class _ChatpageState extends ConsumerState<Chatpage> {
               },
             ),
           ),
-
-          // TEXT INPUT
+          // Input field
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(
