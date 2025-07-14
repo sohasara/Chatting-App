@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 
-import '../../../contract/contact_page.dart';
+import '../../../contract/presentation/contact_page.dart';
 import 'personList.dart';
 
 class HomePage extends StatelessWidget {

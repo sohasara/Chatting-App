@@ -5,6 +5,9 @@ class ContactPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold();
+    return Scaffold(
+      appBar: AppBar(title: const Text('Select Contact')),
+      body: Center(child: Text('Contact Page', style: TextStyle(fontSize: 24))),
+    );
   }
 }
