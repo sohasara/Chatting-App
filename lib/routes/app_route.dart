@@ -1,5 +1,6 @@
+import 'package:chatting_application/features/auth/presentation/log_in.dart';
 import 'package:chatting_application/features/chat/presentation/chat_page/chatpage.dart';
-import 'package:chatting_application/features/chat/presentation/home/homePage.dart';
+//import 'package:chatting_application/features/chat/presentation/home/homePage.dart';
 import 'package:chatting_application/features/chat/presentation/home/personList.dart';
 import 'package:chatting_application/features/contract/presentation/contact_page.dart';
 import 'package:flutter/material.dart';
@@ -9,10 +10,15 @@ import 'package:go_router/go_router.dart';
 final appRouter = GoRouter(
   initialLocation: '/',
   routes: [
+    // GoRoute(
+    //   path: '/',
+    //   name: 'home',
+    //   builder: (context, state) => const HomePage(),
+    // ),
     GoRoute(
       path: '/',
       name: 'home',
-      builder: (context, state) => const HomePage(),
+      builder: (context, state) => const LogInPage(),
     ),
     GoRoute(
       path: '/chat-chatpage',
