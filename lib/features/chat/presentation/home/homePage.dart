@@ -25,6 +25,7 @@ class HomePage extends StatelessWidget {
         ),
         backgroundColor: const Color(0xFFF5F4FE),
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           backgroundColor: const Color(0xFFF5F4FE),
           title: const Padding(
             padding: EdgeInsets.only(top: 8.0),
