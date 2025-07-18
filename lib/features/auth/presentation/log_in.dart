@@ -69,9 +69,12 @@ class LogInPage extends ConsumerWidget {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    backgroundColor: Colors.teal,
+                    backgroundColor: const Color.fromARGB(255, 107, 102, 241),
                   ),
-                  child: const Text('Log In', style: TextStyle(fontSize: 16)),
+                  child: const Text(
+                    'Log In',
+                    style: TextStyle(fontSize: 16, color: Colors.white),
+                  ),
                 ),
               ),
 
