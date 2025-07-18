@@ -62,7 +62,7 @@ class LogInPage extends ConsumerWidget {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    context.pushNamed('home'); // Navigate to home page on login
+                    context.pushNamed('home');
                   },
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
