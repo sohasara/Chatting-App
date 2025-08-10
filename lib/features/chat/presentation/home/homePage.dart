@@ -64,7 +64,7 @@ class HomePage extends StatelessWidget {
                   tabs: const [
                     Tab(child: Center(child: Text("All Chats"))),
                     Tab(child: Center(child: Text("Groups"))),
-                    Tab(child: Center(child: Text("Contacts"))),
+                    Tab(child: Center(child: Text("Calls"))),
                   ],
                 ),
               ),
