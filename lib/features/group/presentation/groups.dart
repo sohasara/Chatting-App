@@ -13,7 +13,7 @@ class GroupPage extends StatelessWidget {
         return ListTile(
           leading: CircleAvatar(
             backgroundColor: Colors.blue,
-            child: Icon(Icons.group, color: Colors.white, size: 30),
+            child: Icon(Icons.group_rounded, color: Colors.white, size: 30),
           ),
           title: Text(personList[index]["name"]),
           subtitle: Text('Hey, how are you?'),
