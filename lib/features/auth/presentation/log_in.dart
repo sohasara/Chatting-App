@@ -1,12 +1,51 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 // Provider for password visibility
 final passwordVisibilityProvider = StateProvider<bool>((ref) => true);
 
 class LogInPage extends ConsumerWidget {
   const LogInPage({super.key});
+
+  // Google Sign-In Method
+  Future<User?> _signInWithGoogle(BuildContext context) async {
+    try {
+      // Create GoogleSignIn instance using the default constructor
+      final googleSignIn = GoogleSignIn();
+
+      // Start the sign-in flow
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+      if (googleUser == null) return null; // User cancelled
+
+      // Get the authentication details
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+
+      // Create Firebase credential
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      // Sign in to Firebase
+      final userCredential = await FirebaseAuth.instance.signInWithCredential(
+        credential,
+      );
+
+      return userCredential.user;
+    } catch (e) {
+      debugPrint("Google Sign-In error: $e");
+      if (context.mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("Sign-In failed: $e")));
+      }
+      return null;
+    }
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -84,8 +123,14 @@ class LogInPage extends ConsumerWidget {
 
               // Google Sign-In
               GestureDetector(
-                onTap: () {
-                  // Handle Google Sign-In
+                onTap: () async {
+                  final user = await _signInWithGoogle(context);
+                  if (user != null && context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("Welcome ${user.displayName}")),
+                    );
+                    context.pushNamed('home');
+                  }
                 },
                 child: Container(
                   width: double.infinity,
