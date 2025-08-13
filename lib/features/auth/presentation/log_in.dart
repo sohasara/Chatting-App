@@ -50,10 +50,17 @@ class LogInPage extends ConsumerWidget {
         context.pushNamed('home');
       }
     } on FirebaseAuthException catch (e) {
+      print(e.code);
       ScaffoldMessenger.of(
         // ignore: use_build_context_synchronously
         context,
       ).showSnackBar(SnackBar(content: Text(e.message ?? "Login failed")));
+    } catch (e, stack) {
+      // Any other error (like the Pigeon type cast issue)
+      debugPrint("Unexpected error: $e\n$stack");
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("An unexpected error occurred.")),
+      );
     }
   }
 
