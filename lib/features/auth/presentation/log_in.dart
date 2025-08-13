@@ -2,54 +2,97 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 // Provider for password visibility
 final passwordVisibilityProvider = StateProvider<bool>((ref) => true);
 
+// AutoDispose providers for TextEditingControllers to avoid leaks
+final emailControllerProvider = Provider.autoDispose<TextEditingController>((
+  ref,
+) {
+  final controller = TextEditingController();
+  ref.onDispose(() => controller.dispose());
+  return controller;
+});
+
+final passwordControllerProvider = Provider.autoDispose<TextEditingController>((
+  ref,
+) {
+  final controller = TextEditingController();
+  ref.onDispose(() => controller.dispose());
+  return controller;
+});
+
 class LogInPage extends ConsumerWidget {
   const LogInPage({super.key});
 
-  // Google Sign-In Method
-  Future<User?> _signInWithGoogle(BuildContext context) async {
+  Future<void> _login(BuildContext context, WidgetRef ref) async {
+    final email = ref.read(emailControllerProvider).text.trim();
+    final password = ref.read(passwordControllerProvider).text.trim();
+
+    if (email.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Please enter email and password")),
+      );
+      return;
+    }
+
     try {
-      // Create GoogleSignIn instance using the default constructor
-      final googleSignIn = GoogleSignIn();
-
-      // Start the sign-in flow
-      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
-      if (googleUser == null) return null; // User cancelled
-
-      // Get the authentication details
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
-
-      // Create Firebase credential
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
       );
-
-      // Sign in to Firebase
-      final userCredential = await FirebaseAuth.instance.signInWithCredential(
-        credential,
-      );
-
-      return userCredential.user;
-    } catch (e) {
-      debugPrint("Google Sign-In error: $e");
       if (context.mounted) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text("Sign-In failed: $e")));
+        ).showSnackBar(const SnackBar(content: Text("Login successful!")));
+        context.pushNamed('home');
       }
-      return null;
+    } on FirebaseAuthException catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.message ?? "Login failed")));
+    }
+  }
+
+  Future<void> _register(BuildContext context, WidgetRef ref) async {
+    final email = ref.read(emailControllerProvider).text.trim();
+    final password = ref.read(passwordControllerProvider).text.trim();
+
+    if (email.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Please enter email and password")),
+      );
+      return;
+    }
+
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
+
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userCredential.user!.uid)
+          .set({'email': email, 'createdAt': DateTime.now()});
+
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Account created! Please log in.")),
+        );
+      }
+    } on FirebaseAuthException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.message ?? "Registration failed")),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final obscurePassword = ref.watch(passwordVisibilityProvider);
+    final emailController = ref.watch(emailControllerProvider);
+    final passwordController = ref.watch(passwordControllerProvider);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -64,6 +107,7 @@ class LogInPage extends ConsumerWidget {
 
               // Email
               TextField(
+                controller: emailController,
                 decoration: InputDecoration(
                   hintText: 'Email',
                   prefixIcon: const Icon(Icons.email),
@@ -71,11 +115,13 @@ class LogInPage extends ConsumerWidget {
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
+                keyboardType: TextInputType.emailAddress,
               ),
               const SizedBox(height: 16),
 
               // Password
               TextField(
+                controller: passwordController,
                 obscureText: obscurePassword,
                 decoration: InputDecoration(
                   hintText: 'Password',
@@ -101,7 +147,8 @@ class LogInPage extends ConsumerWidget {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    context.pushNamed('home');
+                    print("Logging in with email: ${emailController.text}");
+                    _login(context, ref);
                   },
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
@@ -121,38 +168,18 @@ class LogInPage extends ConsumerWidget {
               const Text("OR", style: TextStyle(color: Colors.grey)),
               const SizedBox(height: 16),
 
-              // Google Sign-In
-              GestureDetector(
-                onTap: () async {
-                  final user = await _signInWithGoogle(context);
-                  if (user != null && context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("Welcome ${user.displayName}")),
-                    );
-                    context.pushNamed('home');
-                  }
-                },
-                child: Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey.shade400),
-                    borderRadius: BorderRadius.circular(12),
+              // Register Button
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton(
+                  onPressed: () => _register(context, ref),
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.network(
-                        'https://upload.wikimedia.org/wikipedia/commons/4/4a/Logo_2013_Google.png',
-                        height: 24,
-                      ),
-                      const SizedBox(width: 10),
-                      const Text(
-                        'Continue with Google',
-                        style: TextStyle(fontSize: 16),
-                      ),
-                    ],
-                  ),
+                  child: const Text('Register', style: TextStyle(fontSize: 16)),
                 ),
               ),
               const SizedBox(height: 24),
