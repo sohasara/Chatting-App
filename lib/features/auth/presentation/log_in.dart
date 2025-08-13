@@ -51,6 +51,7 @@ class LogInPage extends ConsumerWidget {
       }
     } on FirebaseAuthException catch (e) {
       ScaffoldMessenger.of(
+        // ignore: use_build_context_synchronously
         context,
       ).showSnackBar(SnackBar(content: Text(e.message ?? "Login failed")));
     }
@@ -82,6 +83,7 @@ class LogInPage extends ConsumerWidget {
         );
       }
     } on FirebaseAuthException catch (e) {
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(e.message ?? "Registration failed")),
       );
@@ -147,7 +149,7 @@ class LogInPage extends ConsumerWidget {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    print("Logging in with email: ${emailController.text}");
+                    //print("Logging in with email: ${emailController.text}");
                     _login(context, ref);
                   },
                   style: ElevatedButton.styleFrom(
