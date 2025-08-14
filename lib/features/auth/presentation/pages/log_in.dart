@@ -1,106 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
-// Provider for password visibility
-final passwordVisibilityProvider = StateProvider<bool>((ref) => true);
-
-// AutoDispose providers for TextEditingControllers to avoid leaks
-final emailControllerProvider = Provider.autoDispose<TextEditingController>((
-  ref,
-) {
-  final controller = TextEditingController();
-  ref.onDispose(() => controller.dispose());
-  return controller;
-});
-
-final passwordControllerProvider = Provider.autoDispose<TextEditingController>((
-  ref,
-) {
-  final controller = TextEditingController();
-  ref.onDispose(() => controller.dispose());
-  return controller;
-});
+import '../providers/password_visibility_provider.dart';
+import '../providers/email_controller_provider.dart';
+import '../providers/password_controller_provider.dart';
+import '../../domain/usecases/login_usecase.dart';
+import '../../domain/usecases/register_usecase.dart';
+import '../../data/repositories/auth_repository.dart';
 
 class LogInPage extends ConsumerWidget {
   const LogInPage({super.key});
-
-  Future<void> _login(BuildContext context, WidgetRef ref) async {
-    final email = ref.read(emailControllerProvider).text.trim();
-    final password = ref.read(passwordControllerProvider).text.trim();
-
-    if (email.isEmpty || password.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please enter email and password")),
-      );
-      return;
-    }
-
-    try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      if (context.mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text("Login successful!")));
-        context.pushNamed('home');
-      }
-    } on FirebaseAuthException catch (e) {
-      ScaffoldMessenger.of(
-        // ignore: use_build_context_synchronously
-        context,
-      ).showSnackBar(SnackBar(content: Text(e.message ?? "Login failed")));
-    } catch (e, stack) {
-      // Any other error (like the Pigeon type cast issue)
-      debugPrint("Unexpected error: $e\n$stack");
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("An unexpected error occurred.")),
-      );
-    }
-  }
-
-  Future<void> _register(BuildContext context, WidgetRef ref) async {
-    final email = ref.read(emailControllerProvider).text.trim();
-    final password = ref.read(passwordControllerProvider).text.trim();
-
-    if (email.isEmpty || password.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please enter email and password")),
-      );
-      return;
-    }
-
-    try {
-      UserCredential userCredential = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: email, password: password);
-
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(userCredential.user!.uid)
-          .set({'email': email, 'createdAt': DateTime.now()});
-
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Account created! Please log in.")),
-        );
-      }
-    } on FirebaseAuthException catch (e) {
-      // ignore: use_build_context_synchronously
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.message ?? "Registration failed")),
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final obscurePassword = ref.watch(passwordVisibilityProvider);
     final emailController = ref.watch(emailControllerProvider);
     final passwordController = ref.watch(passwordControllerProvider);
+
+    final repository = AuthRepository();
+    final loginUseCase = LoginUseCase(repository);
+    final registerUseCase = RegisterUseCase(repository);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -113,7 +33,7 @@ class LogInPage extends ConsumerWidget {
               const FlutterLogo(size: 72),
               const SizedBox(height: 32),
 
-              // Email
+              // Email field
               TextField(
                 controller: emailController,
                 decoration: InputDecoration(
@@ -127,7 +47,7 @@ class LogInPage extends ConsumerWidget {
               ),
               const SizedBox(height: 16),
 
-              // Password
+              // Password field
               TextField(
                 controller: passwordController,
                 obscureText: obscurePassword,
@@ -154,9 +74,26 @@ class LogInPage extends ConsumerWidget {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {
-                    //print("Logging in with email: ${emailController.text}");
-                    _login(context, ref);
+                  onPressed: () async {
+                    final result = await loginUseCase.execute(
+                      emailController.text.trim(),
+                      passwordController.text.trim(),
+                    );
+
+                    if (!context.mounted) return;
+
+                    if (result.success) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text("Login successful!")),
+                      );
+                      context.pushNamed('home');
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(result.errorMessage ?? "Unknown error"),
+                        ),
+                      );
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
@@ -180,7 +117,28 @@ class LogInPage extends ConsumerWidget {
               SizedBox(
                 width: double.infinity,
                 child: OutlinedButton(
-                  onPressed: () => _register(context, ref),
+                  onPressed: () async {
+                    final result = await registerUseCase.execute(
+                      emailController.text.trim(),
+                      passwordController.text.trim(),
+                    );
+
+                    if (!context.mounted) return;
+
+                    if (result.success) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("Account created! Please log in."),
+                        ),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(result.errorMessage ?? "Unknown error"),
+                        ),
+                      );
+                    }
+                  },
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
