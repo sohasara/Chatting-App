@@ -50,7 +50,6 @@ class LogInPage extends ConsumerWidget {
         context.pushNamed('home');
       }
     } on FirebaseAuthException catch (e) {
-      print(e.code);
       ScaffoldMessenger.of(
         // ignore: use_build_context_synchronously
         context,
