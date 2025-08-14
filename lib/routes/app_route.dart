@@ -1,4 +1,4 @@
-import 'package:chatting_application/features/auth/presentation/log_in.dart';
+import 'package:chatting_application/features/auth/presentation/pages/log_in.dart';
 import 'package:chatting_application/features/chat/presentation/chat_page/chatpage.dart';
 import 'package:chatting_application/features/chat/presentation/home/homePage.dart';
 import 'package:chatting_application/features/chat/presentation/home/personList.dart';
